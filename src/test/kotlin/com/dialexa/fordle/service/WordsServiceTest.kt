@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.util.*
 
 internal class WordsServiceTest {
     private lateinit var wordsService: WordsService
@@ -41,13 +42,15 @@ internal class WordsServiceTest {
 
     @Test
     fun makeGuess_unequal_length() {
-        val ex = assertThrows(ResponseStatusException::class.java) { wordsService.makeGuess("targe", "target") }
+        val b64Target = Base64.getEncoder().encodeToString("targe".toByteArray())
+        val ex = assertThrows(ResponseStatusException::class.java) { wordsService.makeGuess(b64Target, "target") }
         assertEquals(HttpStatus.BAD_REQUEST, ex.statusCode)
     }
 
     @Test
     fun makeGuess_mixed_guess() {
-        val actual = wordsService.makeGuess("salve", "large")
+        val b64Target = Base64.getEncoder().encodeToString("salve".toByteArray())
+        val actual = wordsService.makeGuess(b64Target, "large")
         assertAll(
             { assertFalse(actual.won) },
             { assertEquals(5, actual.letters.size) },
@@ -66,7 +69,8 @@ internal class WordsServiceTest {
 
     @Test
     fun makeGuess_handles_multiples() {
-        val actual = wordsService.makeGuess("loose", "folly")
+        val b64Target = Base64.getEncoder().encodeToString("loose".toByteArray())
+        val actual = wordsService.makeGuess(b64Target, "folly")
         assertAll(
             { assertFalse(actual.won) },
             { assertEquals(5, actual.letters.size) },
@@ -85,7 +89,8 @@ internal class WordsServiceTest {
 
     @Test
     fun makeGuess_anagram_guess() {
-        val actual = wordsService.makeGuess("smile", "slime")
+        val b64Target = Base64.getEncoder().encodeToString("smile".toByteArray())
+        val actual = wordsService.makeGuess(b64Target, "slime")
         assertAll(
             { assertTrue(actual.won) },
             { assertEquals(5, actual.letters.size) },
@@ -99,7 +104,8 @@ internal class WordsServiceTest {
 
     @Test
     fun makeGuess_correct_guess() {
-        val actual = wordsService.makeGuess("salve", "salve")
+        val b64Target = Base64.getEncoder().encodeToString("salve".toByteArray())
+        val actual = wordsService.makeGuess(b64Target, "salve")
         assertTrue(actual.won)
         assertEquals(5, actual.letters.size)
         for (letter in actual.letters) {

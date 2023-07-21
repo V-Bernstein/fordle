@@ -22,8 +22,8 @@ class WordsController(val wordsService: WordsService) {
     }
 
     @GetMapping("/words/guess")
-    fun makeGuess(@RequestParam(name = "target") target: String,
+    fun makeGuess(@RequestParam(name = "target") base64Target: String,
                   @RequestParam(name = "guess") guess: String): GameResponse {
-        return wordsService.makeGuess(target, guess)
+        return wordsService.makeGuess(base64Target, guess)
     }
 }

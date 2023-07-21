@@ -3,6 +3,7 @@ package com.dialexa.fordle.service
 import com.dialexa.fordle.entity.ColorEnum
 import com.dialexa.fordle.entity.GameResponse
 import com.dialexa.fordle.entity.LetterCode
+import java.util.Base64
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.util.ResourceUtils
@@ -25,10 +26,13 @@ class WordsService {
 
     fun getTargetWord(): String {
         val words = getWordList()
-        return words.random()
+        val word = words.random()
+        // Return a base64 encoded string for obfuscation
+        return Base64.getEncoder().encodeToString(word.toByteArray())
     }
 
-    fun makeGuess(target: String, guess: String): GameResponse {
+    fun makeGuess(base64Target: String, guess: String): GameResponse {
+        val target = String(Base64.getDecoder().decode(base64Target))
         if (guess.length != target.length || !isWordValid(guess)) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         }

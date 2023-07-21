@@ -19,9 +19,13 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-web") // Needed to expose endpoints
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	// Needed for swagger docs
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
